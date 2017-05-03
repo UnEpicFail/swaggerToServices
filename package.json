@@ -1,0 +1,17 @@
+{
+  "name": "servise_generator",
+  "version": "0.0.1",
+  "description": "generate service for Angulr2+ from Swagger contracts",
+  "main": "./lib/index.js",
+  "bin": {
+    "service_generator": "bin/app.js"
+  },
+  "preferGlobal": "true",
+  "author": "UnEpicFail",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^3.8.3",
+    "mkdirp": "^0.5.1",
+    "mustache": "^2.3.0"
+  }
+}

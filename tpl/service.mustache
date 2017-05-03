@@ -1,0 +1,110 @@
+import { Injectable } from '@angular/core';
+import { Http, Headers } from '@angular/http';
+
+{{=<% %>=}}
+<%#flatImports%>
+<%#imports%>
+import { <%.%> } from './<%from%>/<%.%>';
+<%/imports%>
+<%/flatImports%>
+<%={{ }}=%>
+
+@Injectable()
+export class {{serviceName}} {
+
+    constructor(public http: Http) { }
+
+    {{#flatPaths}}
+    /**
+     * {{{data.description}}}
+     * @method
+     * @name {{name}}
+     *
+     {{#data.parameters.sortedParameters.path.true}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.path.true}}
+     {{#data.parameters.sortedParameters.body.true}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}} 
+     {{/data.parameters.sortedParameters.body.true}}
+     {{#data.parameters.sortedParameters.query.true}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.query.true}}
+     {{#data.parameters.sortedParameters.formData.true}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.formData.true}}
+     {{#data.parameters.sortedParameters.body.false}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> {{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.body.false}}
+     {{#data.parameters.sortedParameters.query.false}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> {{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.query.false}}
+     {{#data.parameters.sortedParameters.formData.false}}
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> {{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
+     {{/data.parameters.sortedParameters.formData.false}}
+     */
+    public {{name}}(
+        {{#data.parameters.sortedParameters.path.true}}
+        {{name}}: {{type}},
+        {{/data.parameters.sortedParameters.path.true}}
+        {{#data.parameters.sortedParameters.body.true}}
+        {{name}}: {{type}},
+        {{/data.parameters.sortedParameters.body.true}}
+        {{#data.parameters.sortedParameters.query.true}}
+        {{name}}: {{type}},
+        {{/data.parameters.sortedParameters.query.true}}
+        {{#data.parameters.sortedParameters.formData.true}}
+        {{name}}: {{type}},
+        {{/data.parameters.sortedParameters.formData.true}}
+        {{#data.parameters.sortedParameters.body.false}}
+        {{name}}?: {{type}},
+        {{/data.parameters.sortedParameters.body.false}}
+        {{#data.parameters.sortedParameters.query.false}}
+        {{name}}?: {{type}},
+        {{/data.parameters.sortedParameters.query.false}}
+        {{#data.parameters.sortedParameters.formData.false}}
+        {{name}}?: {{type}},
+        {{/data.parameters.sortedParameters.formData.false}}
+    ) {
+        let _path = '{{{basePath}}}{{{data.url}}}';
+        let _body = '';
+        {{=<% %>=}}
+        <%#data.parameters.sortedParameters.path.true%>
+        _path = _path.replace(/{<%name%>}/ig, JSON.stringify(<%name%>));
+        <%/data.parameters.sortedParameters.path.true%>
+        <%={{ }}=%>
+        let _params = {
+            {{#data.parameters.sortedParameters.header}}
+            headers: new Headers(),
+            {{/data.parameters.sortedParameters.header}}
+            {{#data.parameters.sortedParameters.query}}
+            search: new URLSearchParams(),
+            {{/data.parameters.sortedParameters.query}}
+        }
+        {{#data.parameters.sortedParameters.header.true}}
+        _params.headers.append('{{name}}', '{{enum}}'); 
+        {{/data.parameters.sortedParameters.header.true}}
+        {{#data.parameters.sortedParameters.query.true}}
+        _params.search.append('{{name}}', ''+{{name}}); 
+        {{/data.parameters.sortedParameters.query.true}}
+        {{#data.parameters.sortedParameters.query.false}}
+        if (typeof {{name}} !== 'undefined')
+            _params.search.append('{{name}}', ''+{{name}}); 
+        {{/data.parameters.sortedParameters.query.false}}
+
+        {{#data.parameters.sortedParameters.body.true}}
+        _body += JSON.stringify({{name}});
+        {{/data.parameters.sortedParameters.body.true}}
+        {{#data.parameters.sortedParameters.body.false}}
+        if (typeof {{name}} !== 'undefined')
+            _body += JSON.stringify({{name}});
+        {{/data.parameters.sortedParameters.body.false}}
+
+        {{#data.parameters.sortedParameters.body}}
+        return this.http['{{data.type}}'](_path, _body, _params)
+        {{/data.parameters.sortedParameters.body}}
+        {{^data.parameters.sortedParameters.body}}
+        return this.http['{{data.type}}'](_path, _params)
+       {{/data.parameters.sortedParameters.body}}
+    }
+    {{/flatPaths}}
+}
