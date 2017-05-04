@@ -69,7 +69,7 @@ export class {{serviceName}} {
         let _body = '';
         {{=<% %>=}}
         <%#data.parameters.sortedParameters.path.true%>
-        _path = _path.replace(/{<%name%>}/ig, JSON.stringify(<%name%>));
+        _path = _path.replace(/{<%name%>}/ig, (typeof <%name%> !== 'string')?JSON.stringify(<%name%>):<%name%>);
         <%/data.parameters.sortedParameters.path.true%>
         <%={{ }}=%>
         let _params = {
