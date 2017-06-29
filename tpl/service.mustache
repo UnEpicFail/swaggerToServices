@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 
 {{=<% %>=}}
 <%#flatImports%>
@@ -72,23 +72,22 @@ export class {{serviceName}} {
         _path = _path.replace(/{<%name%>}/ig, (typeof <%name%> !== 'string')?JSON.stringify(<%name%>):<%name%>);
         <%/data.parameters.sortedParameters.path.true%>
         <%={{ }}=%>
-        let _params = {
-            {{#data.parameters.sortedParameters.header}}
-            headers: new Headers(),
-            {{/data.parameters.sortedParameters.header}}
-            {{#data.parameters.sortedParameters.query}}
-            search: new URLSearchParams(),
-            {{/data.parameters.sortedParameters.query}}
-        }
+        {{#data.parameters.sortedParameters.header}}
+        let _headers = new Headers()
+        {{/data.parameters.sortedParameters.header}}
+        {{#data.parameters.sortedParameters.query}}
+        let _search = new URLSearchParams()
+        {{/data.parameters.sortedParameters.query}}
+        
         {{#data.parameters.sortedParameters.header.true}}
-        _params.headers.append('{{name}}', '{{enum}}'); 
+        _headers.append('{{name}}', '{{enum}}'); 
         {{/data.parameters.sortedParameters.header.true}}
         {{#data.parameters.sortedParameters.query.true}}
-        _params.search.append('{{name}}', ''+{{name}}); 
+        _search.append('{{name}}', ''+{{name}}); 
         {{/data.parameters.sortedParameters.query.true}}
         {{#data.parameters.sortedParameters.query.false}}
         if (typeof {{name}} !== 'undefined')
-            _params.search.append('{{name}}', ''+{{name}}); 
+            _search.append('{{name}}', ''+{{name}}); 
         {{/data.parameters.sortedParameters.query.false}}
 
         {{#data.parameters.sortedParameters.body.true}}
@@ -98,6 +97,15 @@ export class {{serviceName}} {
         if (typeof {{name}} !== 'undefined')
             _body += JSON.stringify({{name}});
         {{/data.parameters.sortedParameters.body.false}}
+
+        let _params = new RequestOptions ({
+            {{#data.parameters.sortedParameters.header}}
+            headers: _headers,
+            {{/data.parameters.sortedParameters.header}}
+            {{#data.parameters.sortedParameters.query}}
+            search: _search,
+            {{/data.parameters.sortedParameters.query}}
+        })
 
         {{#data.parameters.sortedParameters.body}}
         return this.http['{{data.type}}'](_path, _body, _params)
