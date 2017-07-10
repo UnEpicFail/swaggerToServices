@@ -65,7 +65,7 @@ export class {{serviceName}} {
         {{name}}?: {{type}},
         {{/data.parameters.sortedParameters.formData.false}}
     ) {
-        let _path = '//api.'+window.location.host+'{{{basePath}}}{{{data.url}}}';
+        let _path = {{{basePath}}}{{{data.url}}}';
         let _body = '';
         {{=<% %>=}}
         <%#data.parameters.sortedParameters.path.true%>
