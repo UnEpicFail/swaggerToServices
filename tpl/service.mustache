@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 {{=<% %>=}}
 <%#flatImports%>
 <%#imports%>
-import { <%.%> } from './<%from%>/<%.%>';
+import { <%.%> } from '../models/<%from%>/<%.%>';
 <%/imports%>
 <%/flatImports%>
 <%={{ }}=%>
@@ -24,7 +26,7 @@ export class {{serviceName}} {
      * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
      {{/data.parameters.sortedParameters.path.true}}
      {{#data.parameters.sortedParameters.body.true}}
-     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}} 
+     * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
      {{/data.parameters.sortedParameters.body.true}}
      {{#data.parameters.sortedParameters.query.true}}
      * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> *{{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
@@ -78,16 +80,16 @@ export class {{serviceName}} {
         {{#data.parameters.sortedParameters.query}}
         let _search = new URLSearchParams()
         {{/data.parameters.sortedParameters.query}}
-        
+
         {{#data.parameters.sortedParameters.header.true}}
-        _headers.append('{{name}}', '{{enum}}'); 
+        _headers.append('{{name}}', '{{enum}}');
         {{/data.parameters.sortedParameters.header.true}}
         {{#data.parameters.sortedParameters.query.true}}
-        _search.append('{{name}}', ''+{{name}}); 
+        _search.append('{{name}}', ''+{{name}});
         {{/data.parameters.sortedParameters.query.true}}
         {{#data.parameters.sortedParameters.query.false}}
         if (typeof {{name}} !== 'undefined')
-            _search.append('{{name}}', ''+{{name}}); 
+            _search.append('{{name}}', ''+{{name}});
         {{/data.parameters.sortedParameters.query.false}}
 
         {{#data.parameters.sortedParameters.body.true}}
