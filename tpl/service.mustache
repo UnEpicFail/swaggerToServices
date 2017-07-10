@@ -72,9 +72,8 @@ export class {{serviceName}} {
         _path = _path.replace(/{<%name%>}/ig, (typeof <%name%> !== 'string')?JSON.stringify(<%name%>):<%name%>);
         <%/data.parameters.sortedParameters.path.true%>
         <%={{ }}=%>
-        {{#data.parameters.sortedParameters.header}}
         let _headers = new Headers()
-        {{/data.parameters.sortedParameters.header}}
+        _headers.append('Access-Control-Allow-Origin', '*')
         {{#data.parameters.sortedParameters.query}}
         let _search = new URLSearchParams()
         {{/data.parameters.sortedParameters.query}}
