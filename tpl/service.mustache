@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
  
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 {{=<% %>=}}
@@ -111,29 +110,22 @@ export class {{serviceName}} {
         })
 
         {{#data.parameters.sortedParameters.body}}
-        return this.http['{{data.type}}'](_path, _body, _params).map(this.extractData).catch(this.handleError)
+        return this.http['{{data.type}}'](_path, _body, _params).map(this.extractData)
         {{/data.parameters.sortedParameters.body}}
         {{^data.parameters.sortedParameters.body}}
-        return this.http['{{data.type}}'](_path, _params).map(this.extractData).catch(this.handleError)
+        return this.http['{{data.type}}'](_path, _params).map(this.extractData)
        {{/data.parameters.sortedParameters.body}}
     }
     {{/flatPaths}}
 
 
-    extractData(res:Response) {
-        let body = res.json();
-        return body.data || { };
-    }
+    extractData(res) {
+        var body = {data:{}}
+        try{
+            body = JSON.parse(res.text());
+        } catch(e) {
 
-    private handleError (error:Response) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
         }
-        return Observable.throw(errMsg);
+        return body.data || { };
     }
 }
