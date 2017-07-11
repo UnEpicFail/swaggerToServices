@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams, QueryEncoder } from '@angular/http';
  
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -78,18 +78,35 @@ export class {{serviceName}} {
         let _headers = new Headers()
         _headers.append('Access-Control-Allow-Origin', '*')
         {{#data.parameters.sortedParameters.query}}
-        let _search = new URLSearchParams()
+        let q = new QueryEncoder();
+        q.encodeKey = function(str){
+            return str;
+        }  
+        let _search = new URLSearchParams('', q)
         {{/data.parameters.sortedParameters.query}}
         
         {{#data.parameters.sortedParameters.header.true}}
         _headers.append('{{name}}', '{{enum}}'); 
         {{/data.parameters.sortedParameters.header.true}}
         {{#data.parameters.sortedParameters.query.true}}
-        _search.append('{{name}}', ''+{{name}}); 
+        if(Array.isArray({{name}})) {
+            {{name}}.map(item => {
+                _search.append('{{name}}', ''+{{name}});     
+            })
+        } else {
+            _search.append('{{name}}', ''+{{name}}); 
+        }
         {{/data.parameters.sortedParameters.query.true}}
         {{#data.parameters.sortedParameters.query.false}}
-        if (typeof {{name}} !== 'undefined')
-            _search.append('{{name}}', ''+{{name}}); 
+        if (typeof {{name}} !== 'undefined'){
+            if(Array.isArray({{name}})) {
+                {{name}}.map(item => {
+                    _search.append('{{name}}', ''+{{name}});     
+                })
+            } else {
+                _search.append('{{name}}', ''+{{name}}); 
+            }
+        }
         {{/data.parameters.sortedParameters.query.false}}
 
         {{#data.parameters.sortedParameters.body.true}}
