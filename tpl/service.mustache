@@ -137,12 +137,12 @@ export class {{serviceName}} {
 
 
     extractData(res) {
-        var body = {data:{}}
+        var body = {}
         try{
             body = JSON.parse(res.text());
         } catch(e) {
 
         }
-        return body.data || { };
+        return body || { };
     }
 }
