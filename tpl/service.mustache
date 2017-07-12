@@ -91,7 +91,7 @@ export class {{serviceName}} {
         {{#data.parameters.sortedParameters.query.true}}
         if(Array.isArray({{name}})) {
             {{name}}.map(item => {
-                _search.append('{{name}}', ''+{{name}});     
+                _search.append('{{name}}[]', ''+{{name}});     
             })
         } else {
             _search.append('{{name}}', ''+{{name}}); 
@@ -101,7 +101,7 @@ export class {{serviceName}} {
         if (typeof {{name}} !== 'undefined'){
             if(Array.isArray({{name}})) {
                 {{name}}.map(item => {
-                    _search.append('{{name}}', ''+{{name}});     
+                    _search.append('{{name}}[]', ''+{{name}});     
                 })
             } else {
                 _search.append('{{name}}', ''+{{name}}); 
