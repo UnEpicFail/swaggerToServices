@@ -98,7 +98,7 @@ export class {{serviceName}} {
         }
         {{/data.parameters.sortedParameters.query.true}}
         {{#data.parameters.sortedParameters.query.false}}
-        if (typeof {{name}} !== 'undefined' && {{name}} !== null  && {{name}} !== 'null'){
+        if (typeof {{name}} !== 'undefined' && {{name}} !== null ){
             if(Array.isArray({{name}})) {
                 {{name}}.map(item => {
                     _search.append('{{name}}[]', ''+item);     
@@ -113,7 +113,7 @@ export class {{serviceName}} {
         _body += JSON.stringify({{name}});
         {{/data.parameters.sortedParameters.body.true}}
         {{#data.parameters.sortedParameters.body.false}}
-        if (typeof {{name}} !== 'undefined' && {{name}} !== null  && {{name}} !== 'null')
+        if (typeof {{name}} !== 'undefined' && {{name}} !== null )
             _body += JSON.stringify({{name}});
         {{/data.parameters.sortedParameters.body.false}}
 
