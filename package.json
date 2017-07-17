@@ -1,6 +1,6 @@
 {
   "name": "service_generator",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "generate service for Angulr2+ from Swagger contracts",
   "main": "./lib/index.js",
   "bin": {
