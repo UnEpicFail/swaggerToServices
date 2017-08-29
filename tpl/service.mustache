@@ -164,17 +164,19 @@ export class {{serviceName}} {
                 if (Array.isArray(obj[i])) {
                     let arr = [];
                     for (let j = 0, max_j = obj[i].length; j < max_j; j += 1) {
-                        let item = this.unnulling(obj[i][j])
+                        let item = this.unnulling(obj[i][j]);
                         if (item !== null) {
-                            arr.push(item)
+                            arr.push(item);
                         }
                     }                   
-                    obj[i] = arr 
+                    obj[i] = arr;
                 } else {
-                    obj[i] = this.unnulling(obj[i])
+                    obj[i] = this.unnulling(obj[i]);
                 }
             }
         }
+
+        return obj;
 
     }
 }
