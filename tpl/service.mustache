@@ -110,11 +110,11 @@ export class {{serviceName}} {
         {{/data.parameters.sortedParameters.query.false}}
 
         {{#data.parameters.sortedParameters.body.true}}
-        _body += JSON.stringify({{name}});
+        _body += JSON.stringify(this.unnulling({{name}}));
         {{/data.parameters.sortedParameters.body.true}}
         {{#data.parameters.sortedParameters.body.false}}
         if (typeof {{name}} !== 'undefined' && {{name}} !== null )
-            _body += JSON.stringify({{name}});
+            _body += JSON.stringify(this.unnulling({{name}}));
         {{/data.parameters.sortedParameters.body.false}}
 
         let _params = new RequestOptions ({
@@ -144,5 +144,26 @@ export class {{serviceName}} {
 
         }
         return body || { };
+    }
+
+    unnulling(obj){
+        if (
+            typeof obj === 'undefined' ||
+            typeof obj === 'string' ||
+            typeof obj === 'number' ||
+            typeof obj === 'boolean'
+        ) {
+            return obj
+        }
+        
+        for (let i in obj) {
+            if (obj[i]._isEmpty){
+                delete obj[i]
+            } else {
+                obj[i] = this.unnulling(obj[i])
+            }
+        }
+
+        return obj
     }
 }
