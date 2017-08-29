@@ -147,23 +147,34 @@ export class {{serviceName}} {
     }
 
     unnulling(obj){
+        if (!obj || obj._isEmpty) {
+            return null;
+        }
+
         if (
-            typeof obj === 'undefined' ||
             typeof obj === 'string' ||
             typeof obj === 'number' ||
             typeof obj === 'boolean'
         ) {
             return obj
         }
-        
+
         for (let i in obj) {
-            if (obj[i]._isEmpty){
-                delete obj[i]
-            } else {
-                obj[i] = this.unnulling(obj[i])
+            if (i !== '_isEmpty') {
+                if (Array.isArray(obj[i])) {
+                    let arr = [];
+                    for (let j = 0, max_j = obj[i].length; j < max_j; j += 1) {
+                        let item = this.unnulling(obj[i][j])
+                        if (item !== null) {
+                            arr.push(item)
+                        }
+                    }                   
+                    obj[i] = arr 
+                } else {
+                    obj[i] = this.unnulling(obj[i])
+                }
             }
         }
 
-        return obj
     }
 }
