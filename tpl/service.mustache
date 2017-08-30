@@ -4,6 +4,8 @@ import { Http, Headers, RequestOptions, URLSearchParams, QueryEncoder } from '@a
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
+import { FlashMessagerService } from '../lib/n3-ng-grid/flash-messager.service' //очень плохо, надо придумать как то лудше
+
 {{=<% %>=}}
 <%#flatImports%>
 <%#imports%>
@@ -15,7 +17,7 @@ import { <%.%> } from './<%from%>/<%.%>';
 @Injectable()
 export class {{serviceName}} {
 
-    constructor(public http: Http) { }
+    constructor(public http: Http, public fs:FlashMessagerService) { }
 
     {{#flatPaths}}
     /**
@@ -44,6 +46,7 @@ export class {{serviceName}} {
      {{#data.parameters.sortedParameters.formData.false}}
      * @param {{=<% %>=}}{<%type%>}<%={{ }}=%> {{name}} - {{{description}}} {{#items.enum.length}}[{{items.enum}}]{{/items.enum.length}}
      {{/data.parameters.sortedParameters.formData.false}}
+     form - не обазательный параметр, ссылка на форму, для подсветки ошибок
      */
     public {{name}}(
         {{#data.parameters.sortedParameters.path.true}}
@@ -67,6 +70,7 @@ export class {{serviceName}} {
         {{#data.parameters.sortedParameters.formData.false}}
         {{name}}?: {{type}},
         {{/data.parameters.sortedParameters.formData.false}}
+        form?
     ) {
         let _path = '{{{basePath}}}{{{data.url}}}';
         let _body = '';
@@ -127,10 +131,10 @@ export class {{serviceName}} {
         })
 
         {{#data.parameters.sortedParameters.body}}
-        return this.http['{{data.type}}'](_path, _body, _params).map(this.extractData)
+        return this.http['{{data.type}}'](_path, _body, _params).map(this.extractData).catch((err)=>{return this.extractError(err, form)});
         {{/data.parameters.sortedParameters.body}}
         {{^data.parameters.sortedParameters.body}}
-        return this.http['{{data.type}}'](_path, _params).map(this.extractData)
+        return this.http['{{data.type}}'](_path, _params).map(this.extractData).catch((err)=>{return this.extractError(err, form)});
        {{/data.parameters.sortedParameters.body}}
     }
     {{/flatPaths}}
@@ -144,6 +148,49 @@ export class {{serviceName}} {
 
         }
         return body || { };
+    }
+    
+    extractError(err, form?) {
+        
+        let errors
+        try {
+          errors = JSON.parse(err._body)
+        } catch(e) {
+            console.error('not valid json', err._body)
+            this.fs.show({
+                title: 'Error handling error',
+                text: 'Error in error handling'
+            })
+            return e;
+        }
+
+        errors.messages.map(message => {        
+            this.fs.show({
+                title: message.type,
+                text: message.text
+            })
+        })
+        if (form) {
+            let obj = {}
+            
+            errors.validations.map(val => {
+                obj = this.convertArrToObj(val, obj)
+            })
+
+            let notProcessed = {}
+
+            for (let i in obj) {
+                if (form.contains(i)) {
+                    form.get(i).setErrors(obj[i])
+                } else {
+                    notProcessed[i] = obj[i]
+                }
+            }
+
+            return Observable.throw(notProcessed);
+        } else {
+            return Observable.throw(errors);
+        }
     }
 
     unnulling(obj){
