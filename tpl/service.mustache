@@ -192,6 +192,26 @@ export class {{serviceName}} {
             return Observable.throw(errors);
         }
     }
+    
+    convertArrToObj(val, obj) {
+        let _obj = {}
+        let f = val.field.splice(0,1)
+    
+        if (typeof obj[f] === 'undefined') {
+          obj[f] = []
+        }
+    
+        if (val.field.length === 0) {
+          if (typeof obj[f].messages === 'undefined') {
+            obj[f].messages = []
+          }
+          obj[f].messages.push(val.type)
+        } else {
+          obj[f] = this.convertArrToObj(val, obj[f])
+        }
+    
+        return obj
+    }
 
     unnulling(obj){
         if (!obj || obj._isEmpty) {
