@@ -90,8 +90,9 @@ export class {{serviceName}} {
         {{/data.parameters.sortedParameters.query}}
         
         {{#data.parameters.sortedParameters.header.true}}
-        _headers.append('{{name}}', '{{enum}}'); 
+        _headers.append('{{name}}', '{{enum}}');
         {{/data.parameters.sortedParameters.header.true}}
+        _headers.append('X-JWT-Token', localStorage.getItem('token'));
         {{#data.parameters.sortedParameters.query.true}}
         if(Array.isArray({{name}})) {
             {{name}}.map(item => {
