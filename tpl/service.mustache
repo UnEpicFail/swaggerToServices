@@ -168,7 +168,8 @@ export class {{serviceName}} {
         errors.messages.map(message => {        
             this.fs.show({
                 title: message.type,
-                text: message.text
+                text: message.text,
+                type: 'error'
             })
         })
         if (form) {
